@@ -1,11 +1,12 @@
 import React from 'react';
-import { QueueList } from './components/queue-list/QueueList';
 import './App.css';
+import { CurrentConversation } from './components/conversation/CurrentConversation';
 
 function App() {
   return (
     <div className="App">
-      <QueueList/>
+      {/* <QueueList/> */}
+      <CurrentConversation/>
     </div>
   );
 }
