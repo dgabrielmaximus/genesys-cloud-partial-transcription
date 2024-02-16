@@ -22,8 +22,9 @@ export function CurrentConversation(props: any) {
   let retryAfter: number = 0;
   const badWords: string[] = ["um", "uh", "mm"];
 
-  const [interactions, setInteractions] = useState([]);
-  const [speaker, setSpeaker] = useState("");
+  const [interactions, setInteractions] = useState<
+    { speaker: string; utterance: any }[]
+  >([]);
 
   // trigger initialization on component mount
   useEffect(() => {
@@ -110,36 +111,63 @@ export function CurrentConversation(props: any) {
       // unpack relevant data from response
       const { eventBody } = data;
       const transcriptArr: any = [];
-      transcriptArr.push(
-        (eventBody.transcripts || []).map((transcript: any) => {
-          return transcript.alternatives?.[0].transcript;
-        })
-      );
+      // transcriptArr.push(
+      //   (eventBody.transcripts || []).map((transcript: any) => {
+      //     return transcript.alternatives?.[0].transcript;
+      //   })
+      // );
 
-      console.log("TRANSCRIPT ARRAY", transcriptArr);
+      // console.log("TRANSCRIPT ARRAY", transcriptArr);
+
+      // setConvo((eventBody.transcripts || []).map(
+      //   (transcript: any) => {
+      //     const origin = transcript.channel.toLowerCase();
+      //     const utterance = transcript.alternatives?.[0].transcript;
+      //     setSpeaker(origin === "internal" ? "Agent" : "Customer");
+      //     setInteractions(utterance);
+      //     const convoObj = { speaker, utterance: [interactions] };
+      //     transcriptArr.push(convoObj);
+      //     console.log(transcriptArr)
+      //   }
+      // ))
 
       // add the new interactions
-      const newInteractions = (eventBody.transcripts || []).map(
-        (transcript: any) => {
-          const origin = transcript.channel.toLowerCase();
-          const speaker = origin === "internal" ? "Agent" : "Customer";
-          return {
-            speaker: setSpeaker(speaker),
-            transcript: setInteractions(transcriptArr),
-          };
-        }
-      );
+      // const newInteractions = (eventBody.transcripts || []).map(
+      //   (transcript: any) => {
+      //     const origin = transcript.channel.toLowerCase();
+      //     const speaker = origin === "internal" ? "Agent" : "Customer";
+      //     return {
+      //       speaker: setSpeaker(speaker),
+      //       transcript: setInteractions(transcriptArr),
+      //     };
+      //   }
+      // );
 
-      console.log(transcriptArr);
+      // console.log(transcriptArr);
 
-      const newConversations = () => {
-        return {
-          status: eventBody.status?.status,
-          interactions: [...newInteractions],
-        };
-      };
+      // const newConversations = () => {
+      //   return {
+      //     status: eventBody.status?.status,
+      //     interactions: [...newInteractions],
+      //   };
+      // };
 
-      newConversations();
+      // newConversations();
+
+      // const newInteractions = () =>
+      (eventBody.transcripts || []).map((transcript: any) => {
+        const origin = transcript.channel.toLowerCase();
+        const utterance = transcript.alternatives?.[0].transcript;
+        const speaker = origin === "internal" ? "Agent" : "Customer";
+        const convoObj = { speaker, utterance };
+        console.log("CONVO OBJECT", convoObj);
+        transcriptArr.push(convoObj);
+        setInteractions([...interactions, transcriptArr]);
+        console.log("TRANSCRIPT ARRAY", transcriptArr);
+        console.log("INTERACTIONS", interactions);
+      });
+
+      // newInteractions();
     };
 
     addSubscriptionWrapper(transcriptionTopic, transcriptionCallback);
@@ -150,9 +178,11 @@ export function CurrentConversation(props: any) {
       <div className="transcript-wrapper">
         <h5>Transcript</h5>
         <div className="transcript-container">
-          <p>
-            {speaker}: {interactions.map((i: any) => i.join(" "))}
-          </p>
+          {/* {speaker}: {interactions.map((i: any) => i.join(" "))} */}
+          {interactions.map((interaction: any) =>
+            interaction.map((i: any) => <p>{i.speaker + ": " + i.utterance}</p>)
+          )}
+          {/* {convo.map((i: any) => i.speaker)}: {convo.map((i: any) => i.utterance)} */}
         </div>
       </div>
     </div>
