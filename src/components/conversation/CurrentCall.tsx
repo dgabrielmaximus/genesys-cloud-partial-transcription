@@ -23,7 +23,6 @@ export function CurrentCall(props: any) {
       <div className="transcript-wrapper">
         <h5>Transcript</h5>
         <div className="transcript-container">
-          <h1 className="text-3xl font-bold underline">Hello world!</h1>
           {sampleConvo.map((convo, index) => (
             <Message
               key={index}

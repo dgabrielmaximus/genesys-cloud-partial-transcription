@@ -10,6 +10,7 @@ import {
   authenticate,
   getCurrentUserConversationsCalls,
 } from "../../utils/genesysCloudUtils";
+import { Message } from "./Message";
 import { GenesysDevIcons, GenesysDevIcon } from "genesys-dev-icons/lib/index";
 
 /**
@@ -26,14 +27,25 @@ export function CurrentConversation(props: any) {
     { speaker: string; utterance: any }[]
   >([]);
 
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+
   // trigger initialization on component mount
   useEffect(() => {
     setupConvo(); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [interactions]);
 
   function setupConvo() {
     let conversationId: string;
+
     // authenticate logged-in user
+
+    // if (!authenticated) {
+    //   authenticate().then((data: any) => {
+    //     createChannel();
+    //     setAuthenticated(true);
+    //     return data;
+    //   });
+    // }
     authenticate()
       .then((data: any) => {
         createChannel();
@@ -42,6 +54,7 @@ export function CurrentConversation(props: any) {
       .then((data: any) => {
         console.log("AUTH", data);
         return getCurrentUserConversationsCalls();
+      })
         /*
         id: "f318b74b-1bc5-470f-98af-3155557b9237"
         participants: Array(4)
@@ -53,8 +66,8 @@ export function CurrentConversation(props: any) {
         recordingState: "active"
         securePause: false
         */
-      })
-      .then((data: any) => {
+      // })
+     .then((data: any) => {
         console.log("CONVERSATION JSON", data.entities[0]);
         conversationId = data.entities[0].id;
         subscribeToTranscript(conversationId);
@@ -179,10 +192,24 @@ export function CurrentConversation(props: any) {
         <h5>Transcript</h5>
         <div className="transcript-container">
           {/* {speaker}: {interactions.map((i: any) => i.join(" "))} */}
-          {interactions.map((interaction: any) =>
-            interaction.map((i: any) => <p>{i.speaker + ": " + i.utterance}</p>)
+          {interactions.map((interaction: any, index) =>
+            // interaction.map((i: any) => <p>{i.speaker + ": " + i.utterance}</p>)
+            interaction.map((i: any) => (
+              <Message
+              key={index}
+              speaker={i.speaker}
+              transcript={i.utterance}
+            />
+            ))
           )}
           {/* {convo.map((i: any) => i.speaker)}: {convo.map((i: any) => i.utterance)} */}
+          {/* {sampleConvo.map((convo, index) => (
+            <Message
+              key={index}
+              speaker={convo.speaker}
+              transcript={convo.transcript}
+            />
+          ))} */}
         </div>
       </div>
     </div>
