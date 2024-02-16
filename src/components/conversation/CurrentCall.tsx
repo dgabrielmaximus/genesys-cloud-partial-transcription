@@ -23,12 +23,13 @@ export function CurrentCall(props: any) {
       <div className="transcript-wrapper">
         <h5>Transcript</h5>
         <div className="transcript-container">
+          <h1 className="text-3xl font-bold underline">Hello world!</h1>
           {sampleConvo.map((convo, index) => (
-            // <div key={index} className="transcript">
-            //   <div className="speaker">{convo.speaker}</div>
-            //   <div className="transcript">{convo.transcript}</div>
-            // </div>
-            <Message key={index} speaker={convo.speaker} transcript={convo.transcript} />
+            <Message
+              key={index}
+              speaker={convo.speaker}
+              transcript={convo.transcript}
+            />
           ))}
         </div>
       </div>
